@@ -3,6 +3,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const path = require("path");
+const NotificationPreference = require("../models/NotificationPreference");
 
 const uploadDir = path.join(__dirname, "..", "/uploads", "/profilePicture");
 
@@ -22,8 +23,6 @@ const getAllUsers = async (req, res) => {
 };
 const getUser = async (req, res) => {
   const id = req.params.id;
-
-  console.log(id);
   // Get all users from MongoDB
   const user = await User.findById(id).select("-password").exec();
   // If no users
@@ -54,7 +53,6 @@ const checkDuplicate = async (req, res) => {
 const createNewUser = async (req, res) => {
   const { email, password, roles, firstName, lastName, mobileNo, birthday } =
     req.body;
-  console.log(req.body);
   // Confirm data
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
@@ -88,6 +86,10 @@ const createNewUser = async (req, res) => {
   if (user) {
     //created
     res.status(201).json({ message: `New user ${email} created` });
+    //creating notification perference
+    const notificationPreference = new NotificationPreference();
+    user.NotificationPreference = notificationPreference._id;
+    await user.save();
   } else {
     res.status(400).json({ message: "Invalid user data received" });
   }
@@ -256,6 +258,47 @@ const updateAddress = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+const updateNotiPreference = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { typeNotification, newsletterNotification } = req.body;
+
+    // Find the user
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Create or update the address
+    let notificationPreference;
+
+    if (user.notificationPreference) {
+      notificationPreference = await NotificationPreference.findById(
+        user.postalAddress
+      );
+    } else {
+      notificationPreference = new NotificationPreference();
+      user.NotificationPreference = notificationPreference._id;
+    }
+
+    // Update address fields
+    notificationPreference.typeNotification = typeNotification;
+    notificationPreference.newsletterNotification = newsletterNotification;
+
+    // Save the address
+    await notificationPreference.save();
+
+    // Save the user
+    await user.save();
+
+    res
+      .status(200)
+      .json({ message: "Notification Preferences updated successfully", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 const uploadUserPicture = async (req, res) => {
   try {
@@ -275,7 +318,7 @@ const uploadUserPicture = async (req, res) => {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    if (user.profilePicture.length>0) {
+    if (user.profilePicture.length > 0) {
       //Deleting the existing picture
       const filePath = uploadDir + "\\" + user.profilePicture;
       if (!fs.existsSync(filePath)) {
@@ -334,6 +377,7 @@ module.exports = {
   updateUser,
   deleteUser,
   updateAddress,
+  updateNotiPreference,
   uploadUserPicture,
   deleteImg,
 };

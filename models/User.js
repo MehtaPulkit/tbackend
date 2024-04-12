@@ -41,6 +41,10 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Address",
     },
+    notificationPreference: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "NotificationPreference",
+    },
     dateOfBirth: Date,
     mobileNumber: String,
     profilePicture: String, //Add Profile picture

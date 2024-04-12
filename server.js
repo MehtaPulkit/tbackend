@@ -30,6 +30,7 @@ app.use("/", require("./routes/root"));
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/users", require("./routes/userRoutes"));
 app.use("/addresses", require("./routes/addressRoutes"));
+app.use("/notification-preference", require("./routes/userNotificationRoutes"));
 
 app.all("*", (req, res) => {
   res.status(404);
