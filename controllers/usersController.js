@@ -274,11 +274,11 @@ const updateNotiPreference = async (req, res) => {
 
     if (user.notificationPreference) {
       notificationPreference = await NotificationPreference.findById(
-        user.postalAddress
+        user.notificationPreference
       );
     } else {
       notificationPreference = new NotificationPreference();
-      user.NotificationPreference = notificationPreference._id;
+      user.notificationPreference = notificationPreference._id;
     }
 
     // Update address fields

@@ -21,11 +21,11 @@ const login = async (req, res) => {
   const match = await bcrypt.compare(password, foundUser.password);
 
   if (!match) return res.status(401).json({ message: "Unauthorized" });
-  
+
   const accessToken = jwt.sign(
     {
       UserInfo: {
-        id:foundUser._id,
+        id: foundUser._id,
         email: foundUser.email,
         subscription: foundUser.subscription,
         firstname: foundUser.firstname,
@@ -38,6 +38,7 @@ const login = async (req, res) => {
         profilePicture: foundUser.profilePicture,
         lastLogin: foundUser.lastLogin,
         roles: foundUser.roles,
+        notificationPreference: foundUser.notificationPreference,
       },
     },
     process.env.ACCESS_TOKEN_SECRET,
@@ -85,7 +86,7 @@ const refresh = (req, res) => {
       const accessToken = jwt.sign(
         {
           UserInfo: {
-            id:foundUser._id,
+            id: foundUser._id,
             email: foundUser.email,
             subscription: foundUser.subscription,
             firstname: foundUser.firstname,
@@ -98,6 +99,7 @@ const refresh = (req, res) => {
             profilePicture: foundUser.profilePicture,
             lastLogin: foundUser.lastLogin,
             roles: foundUser.roles,
+            notificationPreference: foundUser.notificationPreference,
           },
         },
         process.env.ACCESS_TOKEN_SECRET,
