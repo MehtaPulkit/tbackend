@@ -51,7 +51,7 @@ const checkDuplicate = async (req, res) => {
 // @route POST /users
 // @access Private
 const createNewUser = async (req, res) => {
-  const { email, password, roles, firstName, lastName, mobileNo, birthday } =
+  const { email, password, roles, firstName, lastName, mobileNo, birthday,newsletter } =
     req.body;
   // Confirm data
   if (!email || !password) {
@@ -87,8 +87,12 @@ const createNewUser = async (req, res) => {
     //created
     res.status(201).json({ message: `New user ${email} created` });
     //creating notification perference
+    console.log(newsletter);
     const notificationPreference = new NotificationPreference();
-    user.NotificationPreference = notificationPreference._id;
+    notificationPreference.newsletterNotification=newsletter;
+    await notificationPreference.save();
+    console.log(notificationPreference);
+    user.notificationPreference = notificationPreference._id;
     await user.save();
   } else {
     res.status(400).json({ message: "Invalid user data received" });

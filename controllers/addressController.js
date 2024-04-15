@@ -16,7 +16,6 @@ const getAllAddresses = async (req, res) => {
   res.json(addresses);
 };
 const getAddress = async (req, res) => {
-  console.log("heeki");
   const id = req.params.id;
   // Get all addresss from MongoDB
   const add = await address.findById(id).exec();

@@ -13,8 +13,7 @@ const addressSchema = new mongoose.Schema(
       default: "Australia",
     },
   }
-  // { _id: false }
-); // Exclude _id field for sub-document
+ ); 
 
 // Define model
 module.exports = mongoose.model("Address", addressSchema);
