@@ -87,11 +87,9 @@ const createNewUser = async (req, res) => {
     //created
     res.status(201).json({ message: `New user ${email} created` });
     //creating notification perference
-    console.log(newsletter);
     const notificationPreference = new NotificationPreference();
     notificationPreference.newsletterNotification=newsletter;
     await notificationPreference.save();
-    console.log(notificationPreference);
     user.notificationPreference = notificationPreference._id;
     await user.save();
   } else {

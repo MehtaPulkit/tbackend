@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const addressSchema = new mongoose.Schema(
   {
     addressLine1: { type: String, required: true },
-    addressLine2: String,
+    addressLine2: { type: String, required: false },
     suburb: { type: String, required: true },
     state: { type: String, required: true },
     postalCode: { type: String, required: true },

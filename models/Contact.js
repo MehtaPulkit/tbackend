@@ -1,8 +1,18 @@
 const mongoose = require("mongoose");
-
+const addressSchema = new mongoose.Schema({
+  addressLine1: String,
+  addressLine2: String,
+  suburb: String,
+  state: String,
+  postalCode: String,
+  country: {
+    type: String,
+    default: "Australia",
+  },
+});
 // Define contact schema
 const contactSchema = new mongoose.Schema({
-  contactId: { type: String, unique: true },
+  contactId: { type: String},
   contactType: { type: String, required: true },
   isActive: { type: Boolean, required: false },
   firstName: { type: String, required: false },
@@ -12,9 +22,15 @@ const contactSchema = new mongoose.Schema({
   mobileNo: { type: String, required: false },
   phoneNo: { type: String, required: false },
   abn: { type: String, required: false },
-  websiteURl: { type: String, required: false },
+  websiteURL: { type: String, required: false },
   companyName: { type: String, required: false },
   notes: { type: String, required: false },
+  billingAddress: addressSchema,
+  shippingAddress: addressSchema,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 //add acount type link with this

@@ -1,11 +1,16 @@
 const Contact = require("../models/Contact");
+const User = require("../models/User");
 
 // @desc Get all contacts
 // @route GET /contacts
 // @access Private
 const getAllContacts = async (req, res) => {
+  const user = await User.findOne({ email: req.user })
+    .collation({ locale: "en", strength: 2 })
+    .lean()
+    .exec();
   // Get all contacts from MongoDB
-  const contacts = await Contact.find().lean();
+  const contacts = await Contact.find({ userId: user._id }).lean();
 
   // If no contacts
   if (!contacts?.length) {
@@ -30,6 +35,7 @@ const getContact = async (req, res) => {
 // @access Private
 const createNewContact = async (req, res) => {
   const {
+    userId,
     contactId,
     contactType,
     isActive,
@@ -43,16 +49,49 @@ const createNewContact = async (req, res) => {
     websiteURl,
     companyName,
     notes,
+    billingAddress,
+    shippingAddress,
   } = req.body;
 
   // Confirm data
   // Add more logic for new contact
-  if (!contactType) {
+  if (!contactType || !designation) {
     return res.status(400).json({
-      message: "Contact type is required",
+      message: "Contact type and designation are required",
+    });
+  }
+  if (designation == "Company" && !companyName) {
+    return res.status(400).json({
+      message: "Company name is required",
+    });
+  }
+  console.log(designation);
+  console.log(firstName);
+  console.log(lastName);
+  if (designation == "Individual" && (!firstName || !lastName)) {
+    return res.status(400).json({
+      message: "First name and last name are required",
     });
   }
 
+  const contactObject = {
+    userId,
+    contactId,
+    contactType,
+    isActive,
+    firstName,
+    lastName,
+    email,
+    designation,
+    mobileNo,
+    phoneNo,
+    abn,
+    websiteURl,
+    companyName,
+    notes,
+    billingAddress,
+    shippingAddress,
+  };
   // Create and store new contact
   const contact = await Contact.create(contactObject);
 
@@ -68,8 +107,9 @@ const createNewContact = async (req, res) => {
 // @route PATCH /contacts
 // @access Private
 const updateContact = async (req, res) => {
-  const { id } = req.params;
   const {
+    cID,
+    userId,
     contactId,
     contactType,
     isActive,
@@ -83,17 +123,17 @@ const updateContact = async (req, res) => {
     websiteURl,
     companyName,
     notes,
+    billingAddress,
+    shippingAddress,
   } = req.body;
-
   // Confirm data
-  if (!id) {
+  if (!cID) {
     return res.status(400).json({ message: "contact id is required" });
   }
 
   // Does the contact exist to update?
-  const contact = await Contact.findById(id).exec();
-  console.log(contact);
-  // return res.json(contact);
+  const contact = await Contact.findById(cID).exec();
+
   if (!contact) {
     return res.status(400).json({ message: "contact not found" });
   }
@@ -111,6 +151,8 @@ const updateContact = async (req, res) => {
   contact.websiteURl = websiteURl;
   contact.companyName = companyName;
   contact.notes = notes;
+  contact.billingAddress = billingAddress;
+  contact.shippingAddress = shippingAddress;
 
   const updatedcontact = await contact.save();
 
