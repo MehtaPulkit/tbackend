@@ -9,7 +9,7 @@ const getAllContacts = async (req, res) => {
     .collation({ locale: "en", strength: 2 })
     .lean()
     .exec();
-  // Get all contacts from MongoDB
+  // Get all contacts for the user
   const contacts = await Contact.find({ userId: user._id }).lean();
 
   // If no contacts
@@ -19,16 +19,19 @@ const getAllContacts = async (req, res) => {
 
   res.json(contacts);
 };
+// @desc Get a contact
+// @route GET /contacts/:id
+// @access Private
 const getContact = async (req, res) => {
   const id = req.params.id;
   // Get all contacts from MongoDB
-  const add = await Contact.findById(id).exec();
+  const contact = await Contact.findById(id).exec();
   // If no contacts
-  if (!add) {
+  if (!contact) {
     return res.status(400).json({ message: "No contact found" });
   }
 
-  res.json(add);
+  res.json(contact);
 };
 // @desc Create new contact
 // @route POST /contacts
@@ -65,9 +68,6 @@ const createNewContact = async (req, res) => {
       message: "Company name is required",
     });
   }
-  console.log(designation);
-  console.log(firstName);
-  console.log(lastName);
   if (designation == "Individual" && (!firstName || !lastName)) {
     return res.status(400).json({
       message: "First name and last name are required",
@@ -96,7 +96,6 @@ const createNewContact = async (req, res) => {
   const contact = await Contact.create(contactObject);
 
   if (contact) {
-    //created
     res.status(201).json({ message: `New contact is created` });
   } else {
     res.status(400).json({ message: "Invalid contact data received" });
@@ -156,7 +155,11 @@ const updateContact = async (req, res) => {
 
   const updatedcontact = await contact.save();
 
-  res.status(200).json({ message: `contact details are updated` });
+  if (updatedcontact) {
+    res.status(200).json({ message: `contact details are updated` });
+  } else {
+    return res.status(400).json({ message: "Some error occured in updating" });
+  }
 };
 
 // @desc Delete a contact
@@ -167,20 +170,21 @@ const deleteContact = async (req, res) => {
 
   // Confirm data
   if (!id) {
-    return res.status(400).json({ message: "contact ID Required" });
+    return res.status(400).json({ message: "Contact Id is required" });
   }
   // Does the contact exist to delete?
   const contact = await Contact.findById(id).exec();
 
   if (!contact) {
-    return res.status(400).json({ message: "contact not found" });
+    return res.status(400).json({ message: "No contact found" });
   }
 
   const result = await contact.deleteOne();
-
-  const reply = `Contact is deleted`;
-
-  res.json(reply);
+  if (result) {
+    res.status(200).json({ message: `Contact is deleted` });
+  } else {
+    return res.status(400).json({ message: "Some error occured in deleting" });
+  }
 };
 
 module.exports = {

@@ -21,6 +21,9 @@ const getAllUsers = async (req, res) => {
 
   res.json(users);
 };
+// @desc Get all users
+// @route GET /users/:id
+// @access Private
 const getUser = async (req, res) => {
   const id = req.params.id;
   // Get all users from MongoDB
@@ -32,6 +35,9 @@ const getUser = async (req, res) => {
 
   res.json(user);
 };
+// @desc Get all users
+// @route GET /users/check
+// @access Public
 const checkDuplicate = async (req, res) => {
   const { email } = req.body;
   const duplicate = await User.findOne({ email })
