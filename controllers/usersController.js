@@ -114,8 +114,6 @@ const updateUser = async (req, res) => {
     email,
     roles,
     active,
-    password,
-    currentPassword,
     facebookId,
     googleId,
     subscription,
@@ -167,21 +165,6 @@ const updateUser = async (req, res) => {
   user.profilePicture = profilePicture;
   user.lastLogin = lastLogin;
 
-  if (password) {
-    // Hash password
-    if (currentPassword == password) {
-      return res.status(400).json({
-        message: "You cannot use the old password as your new password",
-      });
-    }
-    const match = await bcrypt.compare(currentPassword, user.password);
-
-    if (!match)
-      return res
-        .status(401)
-        .json({ message: "Incorrect current password provided" });
-    user.password = await bcrypt.hash(password, 10); // salt rounds
-  }
   const updatedUser = await user.save();
 
   if (updatedUser) {
@@ -285,7 +268,35 @@ const updateNotiPreference = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+const updatePassword = async (req, res) => {
+  const { id, currentPassword, password } = req.body;
 
+  const user = await User.findById(id).exec();
+  if (!user) {
+    return res.status(400).json({ message: "User not found" });
+  }
+  if (password) {
+    // Hash password
+    if (currentPassword == password) {
+      return res.status(400).json({
+        message: "You cannot use the old password as your new password",
+      });
+    }
+    const match = await bcrypt.compare(currentPassword, user.password);
+
+    if (!match)
+      return res
+        .status(401)
+        .json({ message: "Incorrect current password provided" });
+    user.password = await bcrypt.hash(password, 10); // salt rounds
+  }
+  const updatedUser = await user.save();
+  if (updatedUser) {
+    res.status(200).json({ message: "Password updated successfully" });
+  } else {
+    res.status(500).json({ message: "Failed to update password" });
+  }
+};
 const uploadUserPicture = async (req, res) => {
   try {
     // Check if user is authenticated and retrieve user data
@@ -363,6 +374,7 @@ module.exports = {
   deleteUser,
   updateAddress,
   updateNotiPreference,
+  updatePassword,
   uploadUserPicture,
   deleteImg,
 };

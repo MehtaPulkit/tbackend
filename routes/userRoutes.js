@@ -21,7 +21,7 @@ router
 router.route("/:id").get(usersController.getUser);
 router.patch("/:id/address/:addressType", usersController.updateAddress);
 router.patch("/:id/notiPreference", usersController.updateNotiPreference);
-
+router.patch("/updatePassword",usersController.updatePassword)
 // upload end point
 router.post(
   "/upload",
