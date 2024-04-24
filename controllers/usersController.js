@@ -1,4 +1,3 @@
-const Address = require("../models/Address");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const fs = require("fs");
