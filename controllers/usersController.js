@@ -3,7 +3,6 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const path = require("path");
-const NotificationPreference = require("../models/NotificationPreference");
 
 const uploadDir = path.join(__dirname, "..", "/uploads", "/profilePicture");
 
@@ -57,8 +56,16 @@ const checkDuplicate = async (req, res) => {
 // @route POST /users
 // @access Private
 const createNewUser = async (req, res) => {
-  const { email, password, roles, firstName, lastName, mobileNo, birthday,newsletter } =
-    req.body;
+  const {
+    email,
+    password,
+    roles,
+    firstName,
+    lastName,
+    mobileNo,
+    birthday,
+    newsletter,
+  } = req.body;
   // Confirm data
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
@@ -76,6 +83,7 @@ const createNewUser = async (req, res) => {
           lastname: lastName,
           mobileNumber: mobileNo,
           dateOfBirth: birthday,
+          notificationPreference: { newsletterNotification: newsletter },
         }
       : {
           email,
@@ -85,6 +93,7 @@ const createNewUser = async (req, res) => {
           lastname: lastName,
           mobileNumber: mobileNo,
           dateOfBirth: birthday,
+          notificationPreference: { newsletterNotification: newsletter },
         };
   // Create and store new user
   const user = await User.create(userObject);
@@ -92,12 +101,6 @@ const createNewUser = async (req, res) => {
   if (user) {
     //created
     res.status(201).json({ message: `New user ${email} created` });
-    //creating notification perference
-    const notificationPreference = new NotificationPreference();
-    notificationPreference.newsletterNotification=newsletter;
-    await notificationPreference.save();
-    user.notificationPreference = notificationPreference._id;
-    await user.save();
   } else {
     res.status(400).json({ message: "Invalid user data received" });
   }
@@ -182,7 +185,11 @@ const updateUser = async (req, res) => {
   }
   const updatedUser = await user.save();
 
-  res.status(200).json({ message: `User details are updated` });
+  if (updatedUser) {
+    res.status(200).json({ message: `User details are updated` });
+  } else {
+    res.status(400).json({ message: `Update failed` });
+  }
 };
 
 // @desc Delete a user
@@ -228,25 +235,7 @@ const updateAddress = async (req, res) => {
     }
 
     // Create or update the address
-    let address;
-    if (addressType === "Postal") {
-      if (user.postalAddress) {
-        address = await Address.findById(user.postalAddress);
-      } else {
-        address = new Address();
-        user.postalAddress = address._id;
-      }
-    } else if (addressType === "Current") {
-      if (user.currentAddress) {
-        address = await Address.findById(user.currentAddress);
-      } else {
-        address = new Address();
-        user.currentAddress = address._id;
-      }
-    } else {
-      return res.status(400).json({ message: "Invalid address type" });
-    }
-
+    let address = {};
     // Update address fields
     address.addressLine1 = addressLine1;
     address.addressLine2 = addressLine2;
@@ -254,8 +243,13 @@ const updateAddress = async (req, res) => {
     address.state = state;
     address.postalCode = postalCode;
 
-    // Save the address
-    await address.save();
+    if (addressType === "Postal") {
+      user.postalAddress = address;
+    } else if (addressType === "Current") {
+      user.currentAddress = address;
+    } else {
+      return res.status(400).json({ message: "Invalid address type" });
+    }
 
     // Save the user
     await user.save();
@@ -278,23 +272,8 @@ const updateNotiPreference = async (req, res) => {
     }
 
     // Create or update the address
-    let notificationPreference;
-
-    if (user.notificationPreference) {
-      notificationPreference = await NotificationPreference.findById(
-        user.notificationPreference
-      );
-    } else {
-      notificationPreference = new NotificationPreference();
-      user.notificationPreference = notificationPreference._id;
-    }
-
-    // Update address fields
-    notificationPreference.typeNotification = typeNotification;
-    notificationPreference.newsletterNotification = newsletterNotification;
-
-    // Save the address
-    await notificationPreference.save();
+    user.notificationPreference.typeNotification = typeNotification;
+    user.notificationPreference.newsletterNotification = newsletterNotification;
 
     // Save the user
     await user.save();
@@ -325,8 +304,7 @@ const uploadUserPicture = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
-
-    if (user.profilePicture.length > 0) {
+    if (user?.profilePicture?.length > 0) {
       //Deleting the existing picture
       const filePath = uploadDir + "\\" + user.profilePicture;
       if (!fs.existsSync(filePath)) {

@@ -1,5 +1,24 @@
 const mongoose = require("mongoose");
 
+// Define address schema
+const addressSchema = new mongoose.Schema({
+  addressLine1: { type: String, required: true },
+  addressLine2: { type: String, required: false },
+  suburb: { type: String, required: true },
+  state: { type: String, required: true },
+  postalCode: { type: String, required: true },
+  country: {
+    type: String,
+    default: "Australia",
+  },
+});
+// Define Notification preference schema
+const notificationPreferenceSchema = new mongoose.Schema({
+  typeNotification: { type: String, default: "Email" },
+  newsletterNotification: { type: Boolean, default: true },
+  pushNotification: { type: Boolean, default: true },
+});
+
 const userSchema = new mongoose.Schema(
   {
     email: {
@@ -21,9 +40,11 @@ const userSchema = new mongoose.Schema(
     },
     firstname: {
       type: String,
+      required: true,
     },
     lastname: {
       type: String,
+      required: true,
     },
     roles: {
       type: [String],
@@ -33,20 +54,14 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    postalAddress: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Address",
+    postalAddress: addressSchema,
+    currentAddress: addressSchema,
+    notificationPreference: notificationPreferenceSchema,
+    dateOfBirth: { type: Date, required: true },
+    mobileNumber: {
+      type: String,
+      required: true,
     },
-    currentAddress: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Address",
-    },
-    notificationPreference: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "NotificationPreference",
-    },
-    dateOfBirth: Date,
-    mobileNumber: String,
     profilePicture: String, //Add Profile picture
     lastLogin: Date, //Add Last login code
   },
