@@ -29,6 +29,7 @@ app.use("/users/profilePicture", express.static(path.join(__dirname, "uploads/pr
 app.use("/", require("./routes/root"));
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/users", require("./routes/userRoutes"));
+app.use("/quotes", require("./routes/quoteRoutes"));
 // app.use("/addresses", require("./routes/addressRoutes"));
 app.use("/contacts",require("./routes/contactRoutes"));
 app.all("*", (req, res) => {
