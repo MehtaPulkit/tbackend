@@ -7,8 +7,11 @@ const serviceSchema = new mongoose.Schema({
   taxCode: { type: String },
   amount: { type: Number },
 });
-const attachments = new mongoose.Schema({
+const attachmentSchema = new mongoose.Schema({
   fileUrl: { type: String },
+  filename: String,
+  contentType: String,
+  size: Number,
 });
 const quoteSchema = new mongoose.Schema(
   {
@@ -17,13 +20,24 @@ const quoteSchema = new mongoose.Schema(
     issueDate: { type: Date, required: true },
     expiryDate: { type: Date, required: true },
     status: { type: String, required: true },
-    amountWithTax: { type: String, required: true, default: false },
-    notes: { type: String, required: false },
-    // itemId: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Item",
-    // },
+    amountWithTax: {
+      type: String,
+      required: true,
+    },
+    notes: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Note",
+    },
+    itemId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Item",
+    },
+    attachments: [attachmentSchema],
     service: serviceSchema,
+    freightAmount: {
+      type: Number,
+    },
+    freightTaxCode: { type: String },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -36,6 +50,5 @@ const quoteSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-//add acount type link with this
 // Define model
 module.exports = mongoose.model("Quote", quoteSchema);

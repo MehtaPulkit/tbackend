@@ -38,59 +38,45 @@ const getQuote = async (req, res) => {
 // @access Private
 const createNewQuote = async (req, res) => {
   const {
-    userId,
-    quoteId,
-    quoteType,
-    isActive,
-    firstName,
-    lastName,
-    email,
-    designation,
-    mobileNo,
-    phoneNo,
-    abn,
-    websiteURl,
-    companyName,
+    quoteNo,
+    purchaseOrderNo,
+    issueDate,
+    expiryDate,
+    status,
+    amountWithTax,
     notes,
-    billingAddress,
-    shippingAddress,
+    itemId,
+    attachments,
+    service,
+    userId,
+    contactId,
+    freightAmount,
+    freightTaxCode,
   } = req.body;
 
   // Confirm data
   // Add more logic for new quote
-  if (!quoteType || !designation) {
+  if (!contactId || !quoteNo || !issueDate || !expiryDate) {
     return res.status(400).json({
-      message: "Quote type and designation are required",
-    });
-  }
-  if (designation == "Company" && !companyName) {
-    return res.status(400).json({
-      message: "Company name is required",
-    });
-  }
-  if (designation == "Individual" && (!firstName || !lastName)) {
-    return res.status(400).json({
-      message: "First name and last name are required",
+      message: "Required fields are not provided",
     });
   }
 
   const quoteObject = {
-    userId,
-    quoteId,
-    quoteType,
-    isActive,
-    firstName,
-    lastName,
-    email,
-    designation,
-    mobileNo,
-    phoneNo,
-    abn,
-    websiteURl,
-    companyName,
+    quoteNo,
+    purchaseOrderNo,
+    issueDate,
+    expiryDate,
+    status,
+    amountWithTax,
     notes,
-    billingAddress,
-    shippingAddress,
+    itemId,
+    attachments,
+    service,
+    userId,
+    contactId,
+    freightAmount,
+    freightTaxCode,
   };
   // Create and store new quote
   const quote = await Quote.create(quoteObject);
@@ -107,51 +93,48 @@ const createNewQuote = async (req, res) => {
 // @access Private
 const updateQuote = async (req, res) => {
   const {
-    cID,
-    userId,
-    quoteId,
-    quoteType,
-    isActive,
-    firstName,
-    lastName,
-    email,
-    designation,
-    mobileNo,
-    phoneNo,
-    abn,
-    websiteURl,
-    companyName,
+    qID,
+    quoteNo,
+    purchaseOrderNo,
+    issueDate,
+    expiryDate,
+    status,
+    amountWithTax,
     notes,
-    billingAddress,
-    shippingAddress,
+    itemId,
+    attachments,
+    service,
+    userId,
+    contactId,
+    freightAmount,
+    freightTaxCode,
   } = req.body;
   // Confirm data
-  if (!cID) {
+  if (!qID) {
     return res.status(400).json({ message: "quote id is required" });
   }
 
   // Does the quote exist to update?
-  const quote = await Quote.findById(cID).exec();
+  const quote = await Quote.findById(qID).exec();
 
   if (!quote) {
     return res.status(400).json({ message: "quote not found" });
   }
 
-  quote.quoteId = quoteId;
-  quote.quoteType = quoteType;
-  quote.isActive = isActive;
-  quote.firstName = firstName;
-  quote.lastName = lastName;
-  quote.email = email;
-  quote.designation = designation;
-  quote.mobileNo = mobileNo;
-  quote.phoneNo = phoneNo;
-  quote.abn = abn;
-  quote.websiteURl = websiteURl;
-  quote.companyName = companyName;
+  quote.quoteNo = quoteNo;
+  quote.purchaseOrderNo = purchaseOrderNo;
+  quote.issueDate = issueDate;
+  quote.expiryDate = expiryDate;
+  quote.status = status;
+  quote.amountWithTax = amountWithTax;
   quote.notes = notes;
-  quote.billingAddress = billingAddress;
-  quote.shippingAddress = shippingAddress;
+  quote.itemId = itemId;
+  quote.attachments = attachments;
+  quote.service = service;
+  quote.userId = userId;
+  quote.contactId = contactId;
+  quote.freightAmount = freightAmount;
+  quote.freightTaxCode = freightTaxCode;
 
   const updatedquote = await quote.save();
 
