@@ -25,14 +25,18 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/", express.static(path.join(__dirname, "public")));
-app.use("/users/profilePicture", express.static(path.join(__dirname, "uploads/profilePicture")));
+app.use(
+  "/users/profilePicture",
+  express.static(path.join(__dirname, "uploads/profilePicture"))
+);
 app.use("/", require("./routes/root"));
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/users", require("./routes/userRoutes"));
 app.use("/quotes", require("./routes/quoteRoutes"));
 app.use("/taxCodes", require("./routes/taxCodeRoutes"));
+app.use("/accounts", require("./routes/accountRoutes"));
 // app.use("/addresses", require("./routes/addressRoutes"));
-app.use("/contacts",require("./routes/contactRoutes"));
+app.use("/contacts", require("./routes/contactRoutes"));
 app.all("*", (req, res) => {
   res.status(404);
   if (req.accepts("html")) {

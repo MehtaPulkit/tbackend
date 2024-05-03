@@ -20,30 +20,39 @@ const accountSchema = new mongoose.Schema(
   {
     accountType: {
       type: String,
-      unique: true,
+      required: true,
     },
-    accountNo: {
+    accountCode: {
       type: String,
+      required: true,
+      unique: true,
     },
     accountName: {
       type: String,
+      required: true,
+      unique: true,
     },
     taxCode: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "TaxCode",
     },
     notes: {
       type: String,
     },
-    classification: {
+    openingBalance: {
+      type: Number,
+    },
+    classifyCashFlow: {
       type: String,
     },
-    cashFlow: {
-      type: String,
+    isActive: {
+      type: Boolean,
     },
-    bank: bankSchema,
+    bankDetails: bankSchema,
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required:true
     },
   },
   { timestamps: true }

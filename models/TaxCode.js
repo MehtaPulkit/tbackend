@@ -47,6 +47,11 @@ const taxCodeSchema = new mongoose.Schema(
     lctThreshold: {
       type: Number,
     },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
 
   { timestamps: true }

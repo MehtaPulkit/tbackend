@@ -38,6 +38,7 @@ const getTaxCode = async (req, res) => {
 // @access Private
 const createNewTaxCode = async (req, res) => {
   const {
+    userId,
     taxCode,
     description,
     taxType,
@@ -59,8 +60,13 @@ const createNewTaxCode = async (req, res) => {
       message: "Tax code is required",
     });
   }
-
+  if (!userId) {
+    return res.status(400).json({
+      message: "User Id is required",
+    });
+  }
   const taxCodeObject = {
+    userId,
     taxCode,
     description,
     taxType,
@@ -115,7 +121,6 @@ const updateTaxCode = async (req, res) => {
     return res.status(400).json({ message: "taxCode not found" });
   }
 
-  taxCodeRes.taxCodeId = taxCodeId;
   taxCodeRes.taxCode = taxCode;
   taxCodeRes.description = description;
   taxCodeRes.taxType = taxType;

@@ -73,7 +73,11 @@ const createNewContact = async (req, res) => {
       message: "First name and last name are required",
     });
   }
-
+  if (!userId) {
+    return res.status(400).json({
+      message: "User Id is required",
+    });
+  }
   const contactObject = {
     userId,
     contactId,
@@ -137,7 +141,6 @@ const updateContact = async (req, res) => {
     return res.status(400).json({ message: "contact not found" });
   }
 
-  contact.contactId = contactId;
   contact.contactType = contactType;
   contact.isActive = isActive;
   contact.firstName = firstName;
