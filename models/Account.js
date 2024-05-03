@@ -18,6 +18,10 @@ const bankSchema = new mongoose.Schema({
 // Define subscription plan schema
 const accountSchema = new mongoose.Schema(
   {
+    classification:{
+      type:String,
+      required: true,
+    },
     accountType: {
       type: String,
       required: true,

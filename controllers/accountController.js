@@ -48,6 +48,7 @@ const createNewAccount = async (req, res) => {
     classifyCashFlow,
     isActive,
     bankDetails,
+    classification,
   } = req.body;
 
   // Confirm data
@@ -73,6 +74,7 @@ const createNewAccount = async (req, res) => {
     classifyCashFlow,
     isActive,
     bankDetails,
+    classification,
   };
   // Create and store new account
   const accountRes = await Account.create(accountObject);
@@ -99,6 +101,7 @@ const updateAccount = async (req, res) => {
     classifyCashFlow,
     isActive,
     bankDetails,
+    classification,
   } = req.body;
   // Confirm data
   if (!accountId) {
@@ -122,7 +125,7 @@ const updateAccount = async (req, res) => {
   accountRes.classifyCashFlow = classifyCashFlow;
   accountRes.isActive = isActive;
   accountRes.bankDetails = bankDetails;
-
+  accountRes.classification = classification;
   const updatedaccount = await accountRes.save();
 
   if (updatedaccount) {
