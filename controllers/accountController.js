@@ -45,12 +45,12 @@ const createNewAccount = async (req, res) => {
     taxCode,
     notes,
     openingBalance,
-    classifyCashFlow,
-    isActive,
+    classifyCashflow,
+    inactiveAccount,
     bankDetails,
     classification,
   } = req.body;
-
+  console.log(classifyCashflow);
   // Confirm data
   // Add more logic for new account
   if (!accountType || !accountCode || !accountName) {
@@ -71,8 +71,8 @@ const createNewAccount = async (req, res) => {
     taxCode,
     notes,
     openingBalance,
-    classifyCashFlow,
-    isActive,
+    classifyCashflow,
+    inactiveAccount,
     bankDetails,
     classification,
   };
@@ -98,8 +98,8 @@ const updateAccount = async (req, res) => {
     taxCode,
     notes,
     openingBalance,
-    classifyCashFlow,
-    isActive,
+    classifyCashflow,
+    inactiveAccount,
     bankDetails,
     classification,
   } = req.body;
@@ -122,8 +122,8 @@ const updateAccount = async (req, res) => {
   accountRes.taxCode = taxCode;
   accountRes.notes = notes;
   accountRes.openingBalance = openingBalance;
-  accountRes.classifyCashFlow = classifyCashFlow;
-  accountRes.isActive = isActive;
+  accountRes.classifyCashflow = classifyCashflow;
+  accountRes.inactiveAccount = inactiveAccount;
   accountRes.bankDetails = bankDetails;
   accountRes.classification = classification;
   const updatedaccount = await accountRes.save();

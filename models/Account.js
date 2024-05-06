@@ -4,10 +4,10 @@ const bankSchema = new mongoose.Schema({
   bsb: {
     type: String,
   },
-  bankaccountNo: {
+  bankAccountNo: {
     type: String,
   },
-  bankaccountName: {
+  bankAccountName: {
     type: String,
   },
   companyTradingName: {
@@ -46,10 +46,10 @@ const accountSchema = new mongoose.Schema(
     openingBalance: {
       type: Number,
     },
-    classifyCashFlow: {
+    classifyCashflow: {
       type: String,
     },
-    isActive: {
+    inactiveAccount: {
       type: Boolean,
     },
     bankDetails: bankSchema,
