@@ -160,10 +160,29 @@ const deleteAccount = async (req, res) => {
   }
 };
 
+// @desc Get all users
+// @route GET /users/check
+// @access Public
+const checkDuplicate = async (req, res) => {
+  const { accountCode } = req.body;
+  const duplicate = await Account.findOne({ accountCode })
+    .collation({ locale: "en", strength: 2 })
+    .lean()
+    .exec();
+
+  if (duplicate) {
+    return res.status(409).json({
+      message: "A account already exists, please check account code and try again.",
+    });
+  } else {
+    return res.status(200).json({ message: "New user" });
+  }
+};
 module.exports = {
   getAllAccounts,
   getAccount,
   createNewAccount,
   updateAccount,
   deleteAccount,
+  checkDuplicate
 };

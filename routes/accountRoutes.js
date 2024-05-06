@@ -12,5 +12,5 @@ router
   .delete(accountController.deleteAccount);
 
 router.route("/:id").get(accountController.getAccount);
-
+router.route("/check").post(accountController.checkDuplicate);
 module.exports = router;

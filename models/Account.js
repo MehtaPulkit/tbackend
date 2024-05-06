@@ -34,7 +34,6 @@ const accountSchema = new mongoose.Schema(
     accountName: {
       type: String,
       required: true,
-      unique: true,
     },
     taxCode: {
       type: mongoose.Schema.Types.ObjectId,
