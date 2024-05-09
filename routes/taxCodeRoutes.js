@@ -12,5 +12,5 @@ router
   .delete(taxCodeController.deleteTaxCode);
 
 router.route("/:id").get(taxCodeController.getTaxCode);
-
+router.route("/check").post(taxCodeController.checkDuplicate);
 module.exports = router;

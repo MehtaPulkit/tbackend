@@ -167,11 +167,29 @@ const deleteTaxCode = async (req, res) => {
     return res.status(400).json({ message: "Some error occured in deleting" });
   }
 };
+// @desc Get all users
+// @route GET /users/check
+// @access Public
+const checkDuplicate = async (req, res) => {
+  const { taxCode } = req.body;
+  const duplicate = await TaxCode.findOne({ taxCode })
+    .collation({ locale: "en", strength: 2 })
+    .lean()
+    .exec();
 
+  if (duplicate) {
+    return res.status(409).json({
+      message: "A tax code already exists, please check tax code and try again.",
+    });
+  } else {
+    return res.status(200).json({ message: "New user" });
+  }
+};
 module.exports = {
   getAllTaxCodes,
   getTaxCode,
   createNewTaxCode,
   updateTaxCode,
   deleteTaxCode,
+  checkDuplicate
 };
