@@ -13,6 +13,9 @@ const jobSchema = new mongoose.Schema(
     description: {
       type: String,
     },
+    inActive: {
+      type: Boolean,
+    },
     contactId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Contact",
