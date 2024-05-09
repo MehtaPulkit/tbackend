@@ -35,6 +35,7 @@ app.use("/users", require("./routes/userRoutes"));
 app.use("/quotes", require("./routes/quoteRoutes"));
 app.use("/taxCodes", require("./routes/taxCodeRoutes"));
 app.use("/accounts", require("./routes/accountRoutes"));
+app.use("/jobs", require("./routes/jobRoutes"));
 // app.use("/addresses", require("./routes/addressRoutes"));
 app.use("/contacts", require("./routes/contactRoutes"));
 app.all("*", (req, res) => {
