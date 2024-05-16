@@ -37,11 +37,10 @@ const getJob = async (req, res) => {
 // @route POST /jobs
 // @access Private
 const createNewJob = async (req, res) => {
-  const { jobNo, jobName, description, contactId, userId } = req.body;
-
+  const { jobNo, jobName, description, contactId, userId, inActive } = req.body;
   // Confirm data
   // Add more logic for new job
-  if (!contactId || !jobNo || !issueDate || !expiryDate) {
+  if (!jobNo || !userId || jobName) {
     return res.status(400).json({
       message: "Required fields are not provided",
     });
@@ -53,6 +52,7 @@ const createNewJob = async (req, res) => {
     description,
     contactId,
     userId,
+    inActive,
   };
   // Create and store new job
   const job = await Job.create(jobObject);
@@ -68,7 +68,8 @@ const createNewJob = async (req, res) => {
 // @route PATCH /jobs
 // @access Private
 const updateJob = async (req, res) => {
-  const { jobId, jobNo, jobName, description, contactId, userId } = req.body;
+  const { jobId, jobNo, jobName, description, contactId, inActive } = req.body;
+  console.log(req.body);
   // Confirm data
   if (!jobId) {
     return res.status(400).json({ message: "job id is required" });
@@ -85,6 +86,7 @@ const updateJob = async (req, res) => {
   job.jobName = jobName;
   job.description = description;
   job.contactId = contactId;
+  job.inActive = inActive;
 
   const updatedjob = await job.save();
 

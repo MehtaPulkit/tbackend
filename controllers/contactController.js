@@ -100,7 +100,7 @@ const createNewContact = async (req, res) => {
   const contact = await Contact.create(contactObject);
 
   if (contact) {
-    res.status(201).json({ message: `New contact is created` });
+    res.status(201).json({ id: contact._id, message: `New contact is created` });
   } else {
     res.status(400).json({ message: "Invalid contact data received" });
   }
