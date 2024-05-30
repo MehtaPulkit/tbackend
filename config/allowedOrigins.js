@@ -1,2 +1,5 @@
-const allowedOrigins = ["http://localhost:3000"];
-module.exports = allowedOrigins
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://thriveee.onrender.com",
+];
+module.exports = allowedOrigins;
