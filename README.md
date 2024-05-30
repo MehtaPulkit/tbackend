@@ -1,1 +1,1 @@
-Thriveee Server
+Thriveee API server
